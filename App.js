@@ -1,6 +1,5 @@
-
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, Text, View } from 'react-native';
+import { StyleSheet, FlatList, Text, View, TouchableOpacity, TextInput } from 'react-native';
 
  
 export default class ToDoList extends Component {
@@ -15,13 +14,42 @@ export default class ToDoList extends Component {
         {id:3, title:'study'},
         {id:4, title:'sleep'},
         {id:5, title:'run'}
-      ]
+      ],
+ 
+      this.state = {
+        text:'New todo',
+        arrayHolder: [],
+        textInput_Holder: null
+ 
+      }
+ 
+  }
+ 
+  addItem = () => {
+ 
+    this.array.push({title : this.state.textInput_Holder});
+    this.setState({ arrayHolder: [...this.array] })
+    this.textInputRef.clear();
+ 
   }
  
   render() {
     return (
  
       <View style={styles.MainContainer}>
+        <View style={styles.add}>
+          <TextInput
+            autoCorrect={false} 
+            ref={ref => this.textInputRef = ref}
+            placeholder={this.state.text}
+            onChangeText={data => this.setState({ textInput_Holder: data })}
+            style={styles.textInputStyle} 
+          />
+          <TouchableOpacity onPress={this.addItem} style={styles.button} >
+            <Text> Add </Text>
+          </TouchableOpacity>
+        </View>
+        
         <FlatList
           data={this.array}
           renderItem={({ item }) => 
@@ -45,6 +73,10 @@ const styles = StyleSheet.create({
  
   },
 
+  add: {
+    flexDirection: 'row',
+  },
+
   addItem: {
     flexDirection: 'row',
     borderBottomColor: 'black',
@@ -57,8 +89,35 @@ const styles = StyleSheet.create({
     height: 44,
     width: '80%',
     
-  }
+  },
+ 
+  textInputStyle: {
+    textAlign: 'center',
+    height: 40,
+    width: '80%',
+    borderWidth: 1,
+    borderColor: 'black',
+    color: 'black',
+    borderRadius: 7,
+    marginTop: 12,
+    marginHorizontal: 2
+  },
+
+  button: {
+  
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+    width: '18%',
+    borderWidth: 1,
+    borderColor: 'black',
+    color: 'black',
+    borderRadius: 7,
+    marginTop: 12,
+    marginHorizontal: 2
+
+  },
+ 
+ 
 });
-
-
 
