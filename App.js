@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, FlatList, Text, View, TouchableOpacity, TextInput } from 'react-native';
 import {Icon, CheckBox, ListItem} from 'native-base';
 
+
+
 export default class ToDoList extends Component {
     constructor(){
         super();
@@ -13,19 +15,12 @@ export default class ToDoList extends Component {
               {id:4, title:'sleep', status:'false'},
               {id:5, title:'run', status:'false'}
               ],
-            text:'New todo',
-            arrayHolder: [],
             textInput_Holder : null,
+            btnValue: false,
+            newId : null
         }
     }
    
-
-    addItem = () => {
-      this.state.array.push({id : this.state.array.length + 1, title: this.state.textInput_Holder, status: 'false'});
-      this.setState({ arrayHolder: [...this.state.array] });
-      this.textInputRef.clear();
-    }
-
     removeItem = (id) => {
       const items = this.state.array;
       const newItems = items.filter(item => item.id !== id);
@@ -45,6 +40,50 @@ export default class ToDoList extends Component {
       this.setState({
         array : newItems
       })
+
+    }
+
+    actItem = () => {
+      if (!this.state.textInput_Holder){
+        return;
+      }
+      const items = this.state.array;
+      if (this.state.btnValue === false) {
+        this.state.array.push({id : items.length + 100, title: this.state.textInput_Holder, status: 'false'});
+        this.setState({
+          items,
+          textInput_Holder: null
+        });
+          
+      } else {
+        items.map( item => {
+          if (this.state.newId === item.id){   
+            
+            item.title = this.state.textInput_Holder; 
+          }
+          return item;
+        })
+       
+        this.setState({
+          btnValue: false
+        })
+      }
+      this.textInputRef.clear();  
+    }
+
+    changeToEdit = (id) => {
+      const items = this.state.array;
+      items.map( item => {
+        if (id === item.id){   
+          this.setState({
+            textInput_Holder: item.title,
+            btnValue: true,
+            newId: id
+          })
+        }
+        return item;
+      })
+      
     }
 
     render(){
@@ -52,16 +91,18 @@ export default class ToDoList extends Component {
           <View style={styles.MainContainer}>
               <View style={styles.add}>
                   <TextInput 
-                    autoCorrect={false} 
                     ref={ref => this.textInputRef = ref}
-                    placeholder={this.state.text} 
-                    onChangeText={textInput_Holder => this.setState({ textInput_Holder }) } 
+                    placeholder='New todo'
+                    onChangeText={textInput_Holder => this.setState({ textInput_Holder })}
+                    value = {this.state.textInput_Holder}
                     style={styles.textInputStyle}
                    />
 
-                    <TouchableOpacity onPress={this.addItem} style={styles.button}>
-                        <Text >Add</Text>
-                    </TouchableOpacity>
+                  <TouchableOpacity onPress={this.actItem} style={styles.button}>
+                      <Text >
+                        {this.state.btnValue ? "Edit" : "Add"}
+                      </Text>
+                  </TouchableOpacity>
               </View>
             
             <FlatList
@@ -77,8 +118,11 @@ export default class ToDoList extends Component {
                   />
                 </ListItem> 
                 <Text style={styles.item}>{item.title}</Text>
-                <TouchableOpacity style={styles.del} onPress = {()=> this.removeItem(item.id)} >
-                    <Icon type="FontAwesome" name="trash" style={styles.icon}  />
+                <TouchableOpacity style={styles.act} onPress = {()=> this.changeToEdit(item.id)} >
+                    <Icon type="FontAwesome" name="edit" style={styles.edit}  />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.act} onPress = {()=> this.removeItem(item.id)} >
+                    <Icon type="FontAwesome" name="trash" style={styles.del}  />
                 </TouchableOpacity>
               </View>
             }
@@ -111,7 +155,7 @@ const styles = StyleSheet.create({
   },
  
   item: {
-    padding: 10,
+    textAlignVertical: 'center',
     fontSize: 18,
     height: 44,
     width: '65%',
@@ -145,21 +189,23 @@ const styles = StyleSheet.create({
 
   },
 
-  del: {
+  act: {
     paddingTop: 10,
     paddingBottom: 10,
-    marginLeft: 30,
+    marginLeft: 10,
     height: 44,
-    justifyContent: 'center',
+    
   },
 
-  icon: {
+  del: {
     color: 'red'
   },
 
-  chk: {
-    color: 'green'
+  edit: {
+    color: 'blue'
   }
  
  
 });
+
+
