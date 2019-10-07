@@ -21,7 +21,7 @@ export default class ToDoList extends Component {
    
 
     addItem = () => {
-      this.state.array.push({id : this.state.array.length + 1, title: this.state.textInput_Holder});
+      this.state.array.push({id : this.state.array.length + 1, title: this.state.textInput_Holder, status: 'false'});
       this.setState({ arrayHolder: [...this.state.array] });
       this.textInputRef.clear();
     }
@@ -163,5 +163,3 @@ const styles = StyleSheet.create({
  
  
 });
-
-
