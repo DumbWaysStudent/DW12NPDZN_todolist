@@ -69,10 +69,11 @@ export default class ToDoList extends Component {
               keyExtractor = {item => item.id}
               renderItem = {({item}) => 
                <View style={styles.addItem}>
-                <ListItem style = {styles.check}> 
+                <ListItem > 
                  <CheckBox 
                   checked = {item.status} 
                   onPress = {()=> this.checkItem(item.id)}
+                  color = "green"
                   />
                 </ListItem> 
                 <Text style={styles.item}>{item.title}</Text>
@@ -156,8 +157,8 @@ const styles = StyleSheet.create({
     color: 'red'
   },
 
-  check: {
-    color:'green'
+  chk: {
+    color: 'green'
   }
  
  
